@@ -412,6 +412,14 @@ angular.module('copayApp.services')
       storage.get('lastCurrencyUsed', cb)
     };
 
+    root.setLastServerUsed = function(lastServerUsed, cb) {
+      storage.set('lastServerUsed', lastServerUsed, cb)
+    };
+
+    root.getLastServerUsed = function(cb) {
+      storage.get('lastServerUsed', cb)
+    };
+
     root.checkQuota = function() {
       var block = '';
       // 50MB

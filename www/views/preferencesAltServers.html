@@ -1,0 +1,34 @@
+
+.<ion-view class="settings" show-tabs>
+  <ion-nav-bar class="bar-royal">
+    <ion-nav-title>
+      {{'Alternative Cashshuffle Servers'|translate}}
+    </ion-nav-title>
+    <ion-nav-back-button>
+    </ion-nav-back-button>
+  </ion-nav-bar>
+  <ion-content>
+    <div class="bar bar-header item-input-inset m20b">
+      <label class="item-input-wrapper">
+        <i class="icon ion-ios-search placeholder-icon"></i>
+        <input type="search" ng-init="searchedAltServer = ''" ng-model="searchedAltServer" ng-change="findServer(searchedAltServer)"
+          placeholder="{{'Search your server' | translate}}">
+      </label>
+    </div>
+    <div class="list" ng-if="lastUsedPopularList[0] && searchedAltServer.length == 0">
+      <ion-radio class="alt-currency-radio" ng-repeat="lastUsedAltServer in lastUsedPopularList" ng-value="lastUsedAltServer.name" ng-model="currentServer"
+        ng-click="save(lastUsedAltServer)">{{lastUsedAltServer.name}} <span class="item-note">{{lastUsedAltServer.name}}</span>
+      </ion-radio>
+    </div>
+    <div class="list">
+      <div class="item" ng-repeat="altServer in altServerList" ng-value="altServer.name" ng-model="currentServer"
+        ng-click="save(altServer)">{{altServer.name}} <span class="item-note">{{altServer.name}}</span>
+      </div>
+    </div>
+    <ion-infinite-scroll
+     ng-if="!listComplete"
+     on-infinite="loadMore()"
+     distance="50%">
+   </ion-infinite-scroll>
+  </ion-content>
+</ion-view>

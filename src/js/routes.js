@@ -245,12 +245,22 @@ angular.module('copayApp').config(function(historicLogProvider, $provide, $logPr
           }
         }
       })
+
       .state('tabs.scan', {
         url: '/scan',
         views: {
           'tab-scan': {
             controller: 'tabScanController',
             templateUrl: 'views/tab-scan.html',
+          }
+        }
+      })
+      .state('tabs.cashshuffle', {
+        url: '/cashshuffle/:walletId',
+        views: {
+          'tab-cashshuffle': {
+            controller: 'tabCashshuffleController',
+            templateUrl: 'views/tab-cashshuffle.html',
           }
         }
       })
@@ -473,6 +483,15 @@ angular.module('copayApp').config(function(historicLogProvider, $provide, $logPr
           }
         }
       })
+      .state('tabs.altServers', {
+        url: '/altServer',
+        views: {
+          'tab-home@tabs': {
+            controller: 'preferencesAltServerController',
+            templateUrl: 'views/preferencesAltServers.html'
+          }
+        }
+      })
       .state('tabs.about.logs', {
         url: '/logs',
         views: {
@@ -530,6 +549,10 @@ angular.module('copayApp').config(function(historicLogProvider, $provide, $logPr
         url: '/preferences/:walletId',
         views: {
           'tab-home@tabs': {
+            controller: 'preferencesController',
+            templateUrl: 'views/preferences.html'
+          },
+          'tab-cashshuffle@tabs': {
             controller: 'preferencesController',
             templateUrl: 'views/preferences.html'
           }
@@ -901,6 +924,18 @@ angular.module('copayApp').config(function(historicLogProvider, $provide, $logPr
           }
         }
       })
+
+      .state('tabs.buybitcoin-terms', {
+        url: '/buy-bitcoin/terms',
+        views: {
+          'tab-home': {
+            controller: 'buyBitcoinStaticContentController',
+            controllerAs: 'vm',
+            templateUrl: 'views/buy-bitcoin/terms.html'
+          }
+        }
+      })
+
       .state('tabs.buybitcoin-welcome', {
         url: '/buy-bitcoin/welcome',
         views: {
@@ -963,6 +998,17 @@ angular.module('copayApp').config(function(historicLogProvider, $provide, $logPr
             controller: 'buyBitcoinKycPersonalInfoController',
             controllerAs: 'vm',
             templateUrl: 'views/buy-bitcoin/kyc-personal-info.html'
+          }
+        }
+      })
+
+      .state('tabs.buybitcoin-privacypolicy', {
+        url: '/buy-bitcoin/privacy-policy',
+        views: {
+          'tab-home': {
+            controller: 'buyBitcoinStaticContentController',
+            controllerAs: 'vm',
+            templateUrl: 'views/buy-bitcoin/privacy-policy.html'
           }
         }
       })
@@ -1145,13 +1191,13 @@ angular.module('copayApp').config(function(historicLogProvider, $provide, $logPr
         }
       })
 
-      /* Sideshift */
-      .state('tabs.sideshift', {
-        url: '/sideshift/:fromWalletId/:toWalletId',
+      /* Shapeshift */
+      .state('tabs.shapeshift', {
+        url: '/shapeshift/:fromWalletId/:toWalletId',
         views: {
           'tab-home@tabs': {
-            controller: 'sideshiftController',
-            templateUrl: 'views/sideshift.html'
+            controller: 'shapeshiftController',
+            templateUrl: 'views/shapeshift.html'
           }
         }
       })
@@ -1429,7 +1475,7 @@ angular.module('copayApp').config(function(historicLogProvider, $provide, $logPr
       if (platformInfo.isCordova) {
         channel = "firebase";
       }
-
+      
       // Send a log to test
       var log = new window.BitAnalytics.LogEvent("wallet_opened", [{}, {}, {}], [channel, 'leanplum']);
       window.BitAnalytics.LogEventHandlers.postEvent(log);
@@ -1466,12 +1512,12 @@ angular.module('copayApp').config(function(historicLogProvider, $provide, $logPr
       });
       window.BitAnalytics.ActionHandlers.trackAction(actionTabOpen);
 
-      var actionSideshiftStart = new window.BitAnalytics.ActionFactory.createAction('click', {
-        name: 'sideshift_start_click', 
-        class: 'track_sideshift_start_click', 
+      var actionShapeShiftStart = new window.BitAnalytics.ActionFactory.createAction('click', {
+        name: 'shapeshift_start_click', 
+        class: 'track_shapeshift_start_click', 
         channels: [channel, 'leanplum']
       });
-      window.BitAnalytics.ActionHandlers.trackAction(actionSideshiftStart);
+      window.BitAnalytics.ActionHandlers.trackAction(actionShapeShiftStart);
 
       // Buy Bitcoin Welcome Screen
 
@@ -1629,8 +1675,9 @@ angular.module('copayApp').config(function(historicLogProvider, $provide, $logPr
         var matchScan = $ionicHistory.currentStateName() == 'tabs.scan' ? true : false;
         var matchSend = $ionicHistory.currentStateName() == 'tabs.send' ? true : false;
         var matchSettings = $ionicHistory.currentStateName() == 'tabs.settings' ? true : false;
+        var matchCashshuffle = $ionicHistory.currentStateName() == 'tabs.cashshuffle' ? true : false;
 
-        var fromTabs = matchHome | matchReceive | matchScan | matchSend | matchSettings;
+        var fromTabs = matchHome | matchReceive | matchScan | matchSend | matchSettings | matchCashshuffle;
 
         //onboarding with no back views
         var matchCollectEmail = $ionicHistory.currentStateName() == 'onboarding.collectEmail' ? true : false;

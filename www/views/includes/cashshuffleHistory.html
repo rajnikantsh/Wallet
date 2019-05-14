@@ -1,0 +1,81 @@
+<div class="wallet-details__group-label" ng-if="!isSearching ? isFirstInGroup($index) : false">
+  <span ng-if="isDateInCurrentMonth(getDate(btx.time))">
+    <span translate>Recent</span>
+  </span>
+
+  <span ng-if="!isDateInCurrentMonth(getDate(btx.time))">
+    {{getDate(btx.time) | amDateFormat:'MMMM'}}
+  </span>
+</div>
+
+<a class="wallet-details__item item">
+  <img ng-if="isUnconfirmed(btx) && wallet.coin != 'bch'" class="wallet-details__tx-icon" src="img/icon-confirming.svg" width="40">
+  <span ng-if="!(isUnconfirmed(btx) && wallet.coin != 'bch')">
+    <img class="wallet-details__tx-icon" src="img/icon-tx-received-outline.svg" width="40" ng-if="btx.action == 'received' && !btx.isSatoshiDice">
+    <img class="wallet-details__tx-icon" src="img/icon-tx-sent-outline.svg" width="40" ng-if="btx.action == 'sent' && !btx.isSatoshiDice">
+    <img class="wallet-details__tx-icon" src="img/icon-tx-moved-outline.svg" width="40" ng-if="btx.action == 'moved' && !btx.isSatoshiDice">
+    <img class="wallet-details__tx-icon satoshi-dice" ng-class="{'received': btx.action == 'received'}" src="{{vm.getSatoshiDiceIconUrl()}}" ng-if="btx.isSatoshiDice">
+  </span>
+
+  <div class="wallet-details__tx-content" ng-class="{'no-border': !isSearching ? isLastInGroup($index) : false}">
+
+    <div class="wallet-details__tx-title" ng-if="!isUnconfirmed(btx)">
+      <div ng-show="btx.action == 'received'" class="ellipsis">
+        <div ng-if="btx.note.body" class="wallet-details__tx-message ellipsis">{{btx.note.body}}</div>
+        <div ng-if="!btx.note.body" class="wallet-details__tx-message ellipsis" translate>Received</div>
+        <time class="wallet-details__tx-time" ng-if="btx.time && createdWithinPastDay(btx.time * 1000)">{{btx.time * 1000 | amTimeAgo}} &emsp;</time>
+        <time class="wallet-details__tx-time" ng-if="btx.time && !createdWithinPastDay(btx.time * 1000)">
+          {{btx.time * 1000 | amDateFormat:'MMM D, YYYY'}} &emsp;
+        </time>
+        <div class="low-fees" ng-if="btx.lowFees">
+          <i class="icon"><img src="img/icon-warning.png" width="20px"></i>
+          <span class="comment" translate>Low fees</span>
+        </div>
+      </div>
+      <div ng-show="btx.action == 'moved'" class="ellipsis">
+        <div ng-if="btx.note.body" class="wallet-details__tx-message ellipsis">{{btx.note.body}}</div>
+        <div ng-if="!btx.note.body" class="wallet-details__tx-message ellipsis" translate>Moved</div>
+      </div>
+      <span class="label tu warning radius" ng-if="btx.action == 'invalid'" translate>Invalid</span>
+    </div>
+
+    <div class="wallet-details__tx-title" ng-if="isUnconfirmed(btx)">
+      <div ng-if="wallet.coin == 'bch'" class="ellipsis">
+        <span ng-if="btx.action == 'moved'">
+          {{addressbook[btx.addressTo].name || addressbook[btx.addressTo] || 'Moved'|translate}}
+        </span>
+        <div ng-if="btx.note.body" class="wallet-details__tx-message ellipsis">{{btx.note.body}}</div>
+        <span ng-if="btx.action == 'received' && wallet.coin == 'bch'" translate>Received</span>
+      </div>
+
+      <div ng-if="wallet.coin != 'bch'" class="ellipsis" style="color: #B4B4B4;">
+        <span ng-if="btx.action == 'moved'">
+          {{addressbook[btx.addressTo].name || addressbook[btx.addressTo] || 'Moving'|translate}}
+        </span>
+        <div ng-if="btx.note.body" class="wallet-details__tx-message ellipsis">{{btx.note.body}}</div>
+        <span ng-if="btx.action == 'received'" translate>Receiving</span>
+      </div>
+    </div>
+
+    <span class="item-note text-right wallet-details__tx-amount">
+      <span class="wallet-details__tx-amount" ng-class="{'wallet-details__tx-amount--recent': btx.recent, 'wallet-details__tx-amount--received': btx.action == 'received'}">
+        <span  class="size-12" ng-if="btx.action == 'invalid'" translate>
+        (possible double spend)
+        </span>
+        <span ng-if="btx.action != 'invalid'">
+          <formatted-amount value="{{btx.action == 'sent'?'-':''}}{{btx.amountValueStr}}" currency="{{btx.amountUnitStr}}"></formatted-amount>
+        </span>
+      </span>
+      <div>
+        <span class="size-12 wallet-details__tx-amount" ng-class="{'wallet-details__tx-amount--recent': btx.recent, 'wallet-details__tx-amount--received': btx.action == 'received'}">
+          <formatted-amount value="{{btx.action == 'sent'?'-':''}}{{btx.alternativeAmountStr}}"></formatted-amount>
+        </span>
+      </div>
+      <div>
+          <span class="size-12 wallet-details__tx-amount" ng-class="{'wallet-details__tx-amount--recent': btx.recent, 'wallet-details__tx-amount--received': btx.action == 'received'}">
+            <button value="suffle" ng-click="shuffleCash()">Suffle</button>
+          </span>
+      </div>
+    </span>
+  </div>
+</a>
